@@ -1,4 +1,4 @@
-package crawlab_go_sdk
+package crawlab
 
 import (
 	"github.com/crawlab-team/crawlab-go-sdk/entity"
