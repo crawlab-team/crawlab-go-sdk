@@ -8,4 +8,5 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/olivere/elastic/v7 v7.0.19
 	github.com/segmentio/kafka-go v0.4.1
+	github.com/smartystreets/goconvey v1.6.4
 )

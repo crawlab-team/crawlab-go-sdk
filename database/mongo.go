@@ -53,7 +53,7 @@ func GetMongoCol(ds entity.DataSource) (*mgo.Session, *mgo.Collection, error) {
 			os.Getenv("CRAWLAB_MONGO_USERNAME"),
 			os.Getenv("CRAWLAB_MONGO_PASSWORD"),
 			os.Getenv("CRAWLAB_MONGO_AUTHSOURCE"),
-			os.Getenv("CRAWLAB_MONGO_DATABASE"),
+			os.Getenv("CRAWLAB_MONGO_DB"),
 			os.Getenv("CRAWLAB_COLLECTION"),
 		)
 	}
