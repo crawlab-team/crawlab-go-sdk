@@ -6,7 +6,9 @@ import (
 	"github.com/apex/log"
 	"github.com/crawlab-team/crawlab-go-sdk/constants"
 	"github.com/crawlab-team/crawlab-go-sdk/entity"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"os"
 	"runtime/debug"
 	"strings"
@@ -86,16 +88,50 @@ func UpdateItem(ds entity.DataSource, item entity.Item, dedupField string) (err 
 func GetItem(ds entity.DataSource, key string, value string) (item entity.Item, err error) {
 	db := GetSqlDatabase(ds)
 	col := os.Getenv("CRAWLAB_COLLECTION")
-	if err := db.QueryRow(fmt.Sprintf("SELECT * FROM %s WHERE %s = '%s'",
+	rows, err := db.Queryx(fmt.Sprintf("SELECT * FROM %s WHERE %s = '%s' LIMIT 1",
 		col,
 		key,
 		value,
-	)).Scan(&item); err != nil {
-		log.Errorf("update item error: " + err.Error())
+	))
+	if err != nil {
+		log.Errorf("get item error: " + err.Error())
 		debug.PrintStack()
 		return item, err
 	}
+	if rows.Next() {
+		item = make(map[string]interface{})
+		if err := rows.MapScan(item); err != nil {
+			log.Errorf("get item error: " + err.Error())
+			debug.PrintStack()
+			return item, err
+		}
+
+		// 字节类型转化
+		// Mysql 默认是字节类型, 需要转化为字符串
+		for k, v := range item {
+			switch v.(type) {
+			case []byte:
+				item[k] = string(v.([]byte))
+			}
+		}
+	}
 	return item, nil
+}
+
+func DeleteItems(ds entity.DataSource, key string, value string) (err error) {
+	db := GetSqlDatabase(ds)
+	col := os.Getenv("CRAWLAB_COLLECTION")
+	_, err = db.Exec(fmt.Sprintf("DELETE FROM %s WHERE %s = '%s'",
+		col,
+		key,
+		value,
+	))
+	if err != nil {
+		log.Errorf("delete items error: " + err.Error())
+		debug.PrintStack()
+		return err
+	}
+	return nil
 }
 
 func GetItemKeys(item entity.Item) (res []string) {
