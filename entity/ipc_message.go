@@ -11,11 +11,11 @@ type IPCMessage struct {
 	IPC     bool        `json:"ipc"`
 }
 
-func (msg *IPCMessage) ToJSON() string {
+func (msg *IPCMessage) ToJSON() (res string, err error) {
 	data, err := json.Marshal(msg)
 	if err != nil {
 		log.Errorf("failed to marshal IPC message: %v", err)
-		return ""
+		return "", err
 	}
-	return string(data)
+	return string(data), nil
 }

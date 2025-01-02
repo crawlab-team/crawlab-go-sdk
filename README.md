@@ -8,15 +8,14 @@ Crawlab Go SDK supports Golang-based spiders integration with Crawlab. It contai
 package main
 
 import (
-	"github.com/crawlab-team/crawlab-go-sdk"
-	"github.com/crawlab-team/crawlab-go-sdk/entity"
+	crawlab "github.com/crawlab-team/crawlab-go-sdk"
 )
 
 func main() {
-    item := entity.Item{}
-    item["url"] = "http://example.com"
-    item["title"] = "hello world"
-    _ = crawlab.SaveItem(item)
+	item := make(map[string]interface{})
+	item["url"] = "http://example.com"
+	item["title"] = "hello world"
+	_ = crawlab.SaveItem(item)
 }
 
 ```
@@ -30,7 +29,6 @@ import (
 	"fmt"
 	"github.com/apex/log"
 	"github.com/crawlab-team/crawlab-go-sdk"
-	"github.com/crawlab-team/crawlab-go-sdk/entity"
 	"github.com/gocolly/colly/v2"
 	"runtime/debug"
 )
@@ -45,11 +43,11 @@ func main() {
 	)
 
 	c.OnHTML("#content_left > .c-container", func(e *colly.HTMLElement) {
-		item := entity.Item{}
+		item := make(map[string]interface{})
 		item["title"] = e.ChildText("h3.t > a")
 		item["url"] = e.ChildAttr("h3.t > a", "href")
 		if err := crawlab.SaveItem(item); err != nil {
-			log.Errorf("save item error: " + err.Error())
+			log.Errorf("save item error: %v", err)
 			debug.PrintStack()
 			return
 		}
