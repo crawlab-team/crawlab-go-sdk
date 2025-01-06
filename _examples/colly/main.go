@@ -1,27 +1,3 @@
-# Crawlab Go SDK
-
-Crawlab Go SDK supports Golang-based spiders integration with Crawlab. It contains a number of APIs including saving crawled items into different data sources including MongoDB, MySQL, Postgres, ElasticSearch and Kafka.
-
-## Basic Usage
-
-```go
-package main
-
-import (
-	"github.com/crawlab-team/crawlab-go-sdk"
-)
-
-func main() {
-	item := make(map[string]interface{})
-	item["url"] = "http://example.com"
-	item["title"] = "hello world"
-	_ = crawlab.SaveItem(item)
-}
-```
-
-## Example Using Colly
-
-```go
 package main
 
 import (
@@ -56,4 +32,3 @@ func main() {
 	// Start scraping on https://quotes.toscrape.com
 	c.Visit("https://quotes.toscrape.com")
 }
-```
